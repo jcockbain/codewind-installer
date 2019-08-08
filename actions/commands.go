@@ -36,7 +36,7 @@ func Commands() {
 		{
 			Name:    "install-dev",
 			Aliases: []string{"in-dev"},
-			Usage:   "Pull pfe, performance & intialize images from artifactory",
+			Usage:   "Pull pfe, performance & initialize images from artifactory",
 			Action: func(c *cli.Context) error {
 				InstallDevCommand()
 				return nil
@@ -46,7 +46,7 @@ func Commands() {
 		{
 			Name:    "install",
 			Aliases: []string{"in"},
-			Usage:   "Pull pfe, performance & intialize images from dockerhub",
+			Usage:   "Pull pfe, performance & initialize images from dockerhub",
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "tag, t",
@@ -120,9 +120,25 @@ func Commands() {
 				return nil
 			},
 		},
+
+		{
+			Name:    "validate",
+			Aliases: []string{"val"},
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "path, p",
+					Usage: "path to local project",
+				},
+			},
+			Usage:   "Validate a project on disk",
+			Action: func(c *cli.Context) error {
+				ValidateCommand(c.String("path"))
+				return nil;
+			},
+		},
+	// Start application
 	}
 
-	// Start application
 	err := app.Run(os.Args)
 	errors.CheckErr(err, 300, "")
 }
