@@ -1,4 +1,6 @@
 /*******************************************************************************
+
+
  * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
@@ -76,7 +78,7 @@ func Commands() {
 
 		{
 			Name:  "start",
-			Usage: "Start the Codewind containers",
+			Usage: "Start the Codewind containers wouifewnoif",
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "tag, t",
@@ -134,6 +136,22 @@ func Commands() {
 			Action: func(c *cli.Context) error {
 				RemoveCommand()
 				return nil
+			},
+		},
+
+		{
+			Name:    "validate",
+			Aliases: []string{"val"},
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "path, p",
+					Usage: "path to local project",
+				},
+			},
+			Usage:   "Validate a project on disk",
+			Action: func(c *cli.Context) error {
+				ValidateCommand(c.String("path"))
+				return nil;
 			},
 		},
 	}
