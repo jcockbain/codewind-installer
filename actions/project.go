@@ -12,8 +12,11 @@
 package actions
 
 import (
+	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
+	"path"
 	"runtime"
 	"strings"
 	"time"
@@ -70,6 +73,38 @@ func DownloadTemplate(c *cli.Context) {
 }
 
 //ValidateProject type
-func ValidateProject() {
-	//code here
+func ValidateProject(c *cli.Context) {
+	projectPath := c.Args().Get(0)
+	language := "unknown"
+	projectType := "docker"
+	if _, err := os.Stat(path.Join(projectPath, "pom.xml")); err == nil {
+		language = "java"
+		projectType = determineProjectFramework(projectPath)
+	}
+	if _, err := os.Stat(path.Join(projectPath, "package.json")); err == nil {
+		language = "nodejs"
+		projectType = "nodejs"
+	}
+	if _, err := os.Stat(path.Join(projectPath, "Package.swift")); err == nil {
+		language = "swift"
+		projectType = "swift"
+	}
+	fmt.Println("project build type: " + projectType)
+	fmt.Println("project language: " + language)
+}
+
+func determineProjectFramework(projectPath string) string {
+	pathToPomXML := path.Join(projectPath, "pom.xml")
+	pomXMLContents, _err := ioutil.ReadFile(pathToPomXML)
+	if _err != nil {
+		return "docker"
+	}
+	pomXMLString := string(pomXMLContents)
+	if strings.Contains(pomXMLString, "<groupId>org.springframework.boot</groupId>") {
+		return "spring"
+	}
+	if strings.Contains(pomXMLString, "<groupId>org.eclipse.microprofile</groupId>") {
+		return "liberty"
+	}
+	return "docker"
 }

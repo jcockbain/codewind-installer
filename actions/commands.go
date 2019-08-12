@@ -47,7 +47,7 @@ func Commands() {
 			},
 			Action: func(c *cli.Context) error {
 				if c.NumFlags() == 0 {
-					// TODO: add ValidateProject() func
+					ValidateProject(c)
 				} else {
 					DownloadTemplate(c)
 				}
@@ -78,7 +78,7 @@ func Commands() {
 
 		{
 			Name:  "start",
-			Usage: "Start the Codewind containers wouifewnoif",
+			Usage: "Start the Codewind containers",
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "tag, t",
@@ -136,22 +136,6 @@ func Commands() {
 			Action: func(c *cli.Context) error {
 				RemoveCommand()
 				return nil
-			},
-		},
-
-		{
-			Name:    "validate",
-			Aliases: []string{"val"},
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "path, p",
-					Usage: "path to local project",
-				},
-			},
-			Usage:   "Validate a project on disk",
-			Action: func(c *cli.Context) error {
-				ValidateCommand(c.String("path"))
-				return nil;
 			},
 		},
 	}
