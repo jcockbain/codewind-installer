@@ -12,6 +12,7 @@
 package actions
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -72,30 +73,58 @@ func DownloadTemplate(c *cli.Context) {
 	utils.DeleteTempFile(zipFileName)
 }
 
-//ValidateProject type
+// ValidateProject find the language and buildType for a project at given filesystem path
 func ValidateProject(c *cli.Context) {
 	projectPath := c.Args().Get(0)
+	language, buildType := determineProjectInfo(projectPath)
+
+	type ProjectType struct {
+		Language  string `json:"language"`
+		BuildType string `json:"buildType"`
+	}
+
+	type ValidationResponse struct {
+		Status string      `json:"status"`
+		Path   string      `json:"path"`
+		Result ProjectType `json:"result"`
+	}
+
+	resp := ValidationResponse{
+		Status: "success",
+		Result: ProjectType{language, buildType},
+		Path:   projectPath,
+	}
+
+	projectInfo, err := json.Marshal(resp)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	fmt.Println(string(projectInfo))
+}
+
+func determineProjectInfo(projectPath string) (string, string) {
 	language := "unknown"
-	projectType := "docker"
+	buildType := "docker"
 	if _, err := os.Stat(path.Join(projectPath, "pom.xml")); err == nil {
 		language = "java"
-		projectType = determineProjectFramework(projectPath)
+		buildType = determineJavaBuildType(projectPath)
 	}
 	if _, err := os.Stat(path.Join(projectPath, "package.json")); err == nil {
 		language = "nodejs"
-		projectType = "nodejs"
+		buildType = "nodejs"
 	}
 	if _, err := os.Stat(path.Join(projectPath, "Package.swift")); err == nil {
 		language = "swift"
-		projectType = "swift"
+		buildType = "swift"
 	}
-	fmt.Println("project build type: " + projectType)
-	fmt.Println("project language: " + language)
+	return language, buildType
 }
 
-func determineProjectFramework(projectPath string) string {
+func determineJavaBuildType(projectPath string) string {
 	pathToPomXML := path.Join(projectPath, "pom.xml")
 	pomXMLContents, _err := ioutil.ReadFile(pathToPomXML)
+	// if there is an error reading the pom.xml, build as docker
 	if _err != nil {
 		return "docker"
 	}
