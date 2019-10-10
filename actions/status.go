@@ -89,7 +89,6 @@ func StatusCommandRemoteDeployment(c *cli.Context, d *deployments.Deployment) {
 // StatusCommandLocalDeployment : Output local deployment details
 func StatusCommandLocalDeployment(c *cli.Context) {
 	jsonOutput := c.Bool("json")
-<<<<<<< HEAD
 	containersAreRunning, err := utils.CheckContainerStatus()
 	if err != nil {
 		fmt.Println(err.Error())
@@ -103,11 +102,6 @@ func StatusCommandLocalDeployment(c *cli.Context) {
 			os.Exit(0)
 		}
 
-=======
-	if utils.CheckContainerStatus() {
-		// Started
-		hostname, port := utils.GetPFEHostAndPort()
->>>>>>> origin/master
 		if jsonOutput {
 
 			imageTagArr, err := utils.GetImageTags()
@@ -144,7 +138,6 @@ func StatusCommandLocalDeployment(c *cli.Context) {
 		os.Exit(0)
 	}
 
-<<<<<<< HEAD
 	imagesAreInstalled, err := utils.CheckImageStatus()
 	if err != nil {
 		fmt.Println(err.Error())
@@ -152,9 +145,6 @@ func StatusCommandLocalDeployment(c *cli.Context) {
 	}
 
 	if imagesAreInstalled {
-=======
-	if utils.CheckImageStatus() {
->>>>>>> origin/master
 		// Installed but not started
 		if jsonOutput {
 
