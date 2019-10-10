@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v20.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
 package security
 
 import (
@@ -47,7 +58,7 @@ func (se *SecError) Error() string {
 		Description string `json:"error_description"`
 	}
 	tempOutput := &Output{Operation: se.Op, Description: se.Err.Error()}
-	jsonError, _ := json.Marshal(tempOutput)
+jsonError, _ := json.Marshal(tempOutput)
 	return string(jsonError)
 }
 
