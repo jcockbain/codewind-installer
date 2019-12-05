@@ -46,17 +46,17 @@ func GetContainerVersions(conID string, httpClient utils.HTTPClient) (ContainerV
 	}
 
 	var containerVersions ContainerVersions
-	PFEVersion, err := GetPFEVersionFromConnection(conInfo, http.DefaultClient)
+	PFEVersion, err := GetPFEVersionFromConnection(conInfo, httpClient)
 	if err != nil {
 		return ContainerVersions{}, err
 	}
 
-	GatekeeperVersion, err := GetGatekeeperVersionFromConnection(conInfo, http.DefaultClient)
+	GatekeeperVersion, err := GetGatekeeperVersionFromConnection(conInfo, httpClient)
 	if err != nil {
 		return ContainerVersions{}, err
 	}
 
-	PerformanceVersion, err := GetPerformanceVersionFromConnection(conInfo, http.DefaultClient)
+	PerformanceVersion, err := GetPerformanceVersionFromConnection(conInfo, httpClient)
 	if err != nil {
 		return ContainerVersions{}, err
 	}
@@ -71,13 +71,13 @@ func GetContainerVersions(conID string, httpClient utils.HTTPClient) (ContainerV
 }
 
 // GetPFEVersionFromConnection : Get the version of the PFE container, deployed to the connection with the given ID
-func GetPFEVersionFromConnection(connection *connections.Connection, HTTPClient utils.HTTPClient) (string, error) {
+func GetPFEVersionFromConnection(connection *connections.Connection, httpClient utils.HTTPClient) (string, error) {
 	req, err := http.NewRequest("GET", connection.URL+"/api/v1/environment", nil)
 	if err != nil {
 		return "", err
 	}
 
-	version, err := getVersionFromEnvAPI(req, connection, HTTPClient)
+	version, err := getVersionFromEnvAPI(req, connection, httpClient)
 	if err != nil {
 		return "", err
 	}
@@ -85,13 +85,13 @@ func GetPFEVersionFromConnection(connection *connections.Connection, HTTPClient 
 }
 
 // GetGatekeeperVersionFromConnection : Get the version of the Gatekeeper container, deployed to the connection with the given ID
-func GetGatekeeperVersionFromConnection(connection *connections.Connection, HTTPClient utils.HTTPClient) (string, error) {
+func GetGatekeeperVersionFromConnection(connection *connections.Connection, httpClient utils.HTTPClient) (string, error) {
 	req, err := http.NewRequest("GET", connection.URL+"/api/v1/gatekeeper/environment", nil)
 	if err != nil {
 		return "", err
 	}
 
-	version, err := getVersionFromEnvAPI(req, connection, HTTPClient)
+	version, err := getVersionFromEnvAPI(req, connection, httpClient)
 	if err != nil {
 		return "", err
 	}
@@ -99,21 +99,21 @@ func GetGatekeeperVersionFromConnection(connection *connections.Connection, HTTP
 }
 
 // GetPerformanceVersionFromConnection : Get the version of the Performance container, deployed to the connection with the given ID
-func GetPerformanceVersionFromConnection(connection *connections.Connection, HTTPClient utils.HTTPClient) (string, error) {
+func GetPerformanceVersionFromConnection(connection *connections.Connection, httpClient utils.HTTPClient) (string, error) {
 	req, err := http.NewRequest("GET", connection.URL+"/performance/api/v1/environment", nil)
 	if err != nil {
 		return "", err
 	}
 
-	version, err := getVersionFromEnvAPI(req, connection, HTTPClient)
+	version, err := getVersionFromEnvAPI(req, connection, httpClient)
 	if err != nil {
 		return "", err
 	}
 	return version, err
 }
 
-func getVersionFromEnvAPI(req *http.Request, connection *connections.Connection, HTTPClient utils.HTTPClient) (string, error) {
-	resp, httpSecError := sechttp.DispatchHTTPRequest(HTTPClient, req, connection)
+func getVersionFromEnvAPI(req *http.Request, connection *connections.Connection, httpClient utils.HTTPClient) (string, error) {
+	resp, httpSecError := sechttp.DispatchHTTPRequest(httpClient, req, connection)
 	if httpSecError != nil {
 		return "", httpSecError
 	}
