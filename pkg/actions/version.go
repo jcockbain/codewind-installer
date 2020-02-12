@@ -77,11 +77,7 @@ func GetAllConnectionVersions() {
 		os.Exit(1)
 	}
 
-	containerVersionsList, err := apiroutes.GetAllContainerVersions(connections, appconstants.VersionNum, http.DefaultClient)
-	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
-	}
+	containerVersionsList := apiroutes.GetAllContainerVersions(connections, appconstants.VersionNum, http.DefaultClient)
 
 	if printAsJSON {
 		PrettyPrintJSON(containerVersionsList)
